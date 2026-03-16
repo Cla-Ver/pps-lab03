@@ -1,6 +1,9 @@
 package u03
 
 import u03.Optionals.Optional
+import u03.extensionmethods.Sequences.Sequence.{Cons, Nil}
+
+import scala.annotation.tailrec
 
 object Sequences: // Essentially, generic linkedlists
   
@@ -32,7 +35,11 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30], 0 => [10, 20, 30]
      * E.g., [], 2 => []
      */
-    def skip[A](s: Sequence[A])(n: Int): Sequence[A] = ???
+    @tailrec
+    def skip[A](s: Sequence[A])(n: Int): Sequence[A] = (s, n) match
+      case (l, 0) => l
+      case (Cons(h, t), n) => skip(t)(n - 1)
+      case _ => Nil()
 
     /*
      * Zip two sequences
@@ -40,7 +47,11 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10], [] => []
      * E.g., [], [] => []
      */
-    def zip[A, B](first: Sequence[A], second: Sequence[B]): Sequence[(A, B)] = ???
+    def zip[A, B](first: Sequence[A], second: Sequence[B]): Sequence[(A, B)] = (first, second) match
+      case (_, Nil()) => Nil()
+      case (Nil(), _) => Nil()
+      case (Cons(h1, t1), Cons(h2, t2)) => Cons((h1, h2), zip(t1, t2))
+
 
     /*
      * Concatenate two sequences
@@ -48,7 +59,10 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10], [] => [10]
      * E.g., [], [] => []
      */
-    def concat[A](s1: Sequence[A], s2: Sequence[A]): Sequence[A] = ???
+    def concat[A](s1: Sequence[A], s2: Sequence[A]): Sequence[A] = (s1, s2) match
+      case (Nil(), s2) => s2
+      case (s1, Nil()) => s1
+      case (Cons(h, t), s2) => Cons(h, concat(t, s2))
 
     /*
      * Reverse the sequence
@@ -56,7 +70,9 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10] => [10]
      * E.g., [] => []
      */
-    def reverse[A](s: Sequence[A]): Sequence[A] = ???
+    def reverse[A](s: Sequence[A]): Sequence[A] = s match
+      case Nil() => Nil()
+      case Cons(h, t) => concat(reverse(t), Cons(h, Nil()))
 
     /*
      * Map the elements of the sequence to a new sequence and flatten the result
@@ -64,14 +80,23 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30], calling with mapper(v => [v]) returns [10, 20, 30]
      * E.g., [10, 20, 30], calling with mapper(v => Nil()) returns []
      */
-    def flatMap[A, B](s: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] = ???
+    def flatMap[A, B](s: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] = (s, mapper) match
+      case (Nil(), _) => Nil()
+      case (Cons(h, t), mapper) => concat(mapper(h), flatMap(t)(mapper))
 
     /*
      * Get the minimum element in the sequence
      * E.g., [30, 20, 10] => 10
      * E.g., [10, 1, 30] => 1
      */
-    def min(s: Sequence[Int]): Optional[Int] = ???
+    def min(s: Sequence[Int]): Optional[Int] =
+      @tailrec
+      def minimum(s: Sequence[Int], minimumSoFar: Optional[Int]): Optional[Int] = (s, minimumSoFar) match
+        case (Nil(), m) => m
+        case (Cons(h, t), Optional.Empty()) => minimum(t, Optional.Just(h))
+        case (Cons(h, t), Optional.Just(m)) if h < m => minimum(t, Optional.Just(h))
+        case (Cons(h, t), m) => minimum(t, m)
+      minimum(s, Optional.Empty())
 
     /*
      * Get the elements at even indices

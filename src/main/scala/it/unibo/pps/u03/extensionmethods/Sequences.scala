@@ -1,5 +1,7 @@
 package u03.extensionmethods
 
+import scala.annotation.tailrec
+
 object Sequences:
   
   enum Sequence[E]:
@@ -24,10 +26,18 @@ object Sequences:
         case Cons(_, t)            => t.filter(pred)
         case Nil()                 => Nil()
 
+      def skip(nSkip: Int): Sequence[A] = (l, nSkip) match
+        case (l, 0) => l
+        case (Cons(h, t), n) => t.skip(n - 1)
+        case _ => Nil()
+
+      /*def zip[B](toZip: Sequence[B]): Sequence[(A, B)] = (l, toZip) match
+        case (_, Nil()) => Nil()*/
+
     def of[A](n: Int, a: A): Sequence[A] =
       if (n == 0) then Nil[A]() else Cons(a, of(n - 1, a))
 
-@main def trySequences() =
+@main def trySequences(): Unit =
   import Sequences.*
   import Sequence.*
   
@@ -36,4 +46,5 @@ object Sequences:
   println(sum(map(filter(seq)(_ >= 20))(_ + 1))) // equally possible
   val seq2 = of(10, -1) // Cons(-1, Cons(-1, Cons(-1, ...)))
   println(seq2.sum) // -10
+  println(seq.skip(1))
   
