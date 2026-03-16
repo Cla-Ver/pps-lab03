@@ -95,7 +95,7 @@ object Sequences: // Essentially, generic linkedlists
         case (Nil(), m) => m
         case (Cons(h, t), Optional.Empty()) => minimum(t, Optional.Just(h))
         case (Cons(h, t), Optional.Just(m)) if h < m => minimum(t, Optional.Just(h))
-        case (Cons(h, t), m) => minimum(t, m)
+        case (Cons(_, t), m) => minimum(t, m)
       minimum(s, Optional.Empty())
 
     /*
