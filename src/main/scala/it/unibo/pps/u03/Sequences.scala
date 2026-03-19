@@ -110,6 +110,7 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30] => true if elem is 20
      * E.g., [10, 20, 30] => false if elem is 40
      */
+    @tailrec
     def contains[A](s: Sequence[A])(elem: A): Boolean = s match
       case Nil() => false
       case Cons(h, t) if h == elem => true
@@ -121,7 +122,13 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 10, 30] => [10, 20, 30]
      * E.g., [10, 20, 30] => [10, 20, 30]
      */
-    def distinct[A](s: Sequence[A]): Sequence[A] = ???
+    def distinct[A](s: Sequence[A]): Sequence[A] =
+      @tailrec
+      def dist[A](remainingSequence: Sequence[A])(distinctSequence: Sequence[A]): Sequence[A] = remainingSequence match
+        case Nil() => distinctSequence
+        case Cons(h, t) if contains(distinctSequence)(h) => dist(t)(distinctSequence)
+        case Cons(h, t) => dist(t)(concat(distinctSequence, Cons(h, Nil())))
+      dist(s)(Nil())
 
     /*
      * Group contiguous elements in the sequence
