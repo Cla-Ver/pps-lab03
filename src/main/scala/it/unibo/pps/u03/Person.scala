@@ -28,5 +28,5 @@ object Person:
     case Nil() => initialValue
     case Cons(h, t) => foldLeft(t)(operator(initialValue, h))(operator)
 
-
+  def countDistinctCourses(persons: Sequence[Person]): Int = foldLeft(distinct(teachersCourses(persons)))(0)((e, _) => e + 1)
 
