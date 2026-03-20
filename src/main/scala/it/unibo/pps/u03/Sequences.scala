@@ -104,7 +104,7 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30, 40] => [10, 30]
      */
     def evenIndices[A](s: Sequence[A]): Sequence[A] = s match
-      case Cons(h, t) => Cons(h, skip(s)(2))
+      case Cons(h, _) => Cons(h, skip(s)(2))
       case _ => Nil()
 
     /*
@@ -117,7 +117,6 @@ object Sequences: // Essentially, generic linkedlists
       case Nil() => false
       case Cons(h, t) if h == elem => true
       case Cons(_, t) => contains(t)(elem)
-
 
     /*
      * Remove duplicates from the sequence
@@ -138,14 +137,30 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30] => [[10], [20], [30]]
      * E.g., [10, 20, 20, 30] => [[10], [20, 20], [30]]
      */
-    def group[A](s: Sequence[A]): Sequence[Sequence[A]] = ???
+      
+    def group[A](s: Sequence[A]): Sequence[Sequence[A]] =
+      @tailrec
+      def grouping[A](s: Sequence[A], sequences: Sequence[Sequence[A]], currentGroup: Sequence[A]): Sequence[Sequence[A]] = s match
+        case Cons(h, t) if contains(currentGroup)(h) || currentGroup == Sequence.Nil() => grouping(t, sequences, concat(currentGroup, Sequence.Cons(h, Nil())))
+        case Cons(h, t) => grouping(t, concat(sequences, Sequence.Cons(currentGroup, Nil())), Sequence.Cons(h, Nil()))
+        case _ if currentGroup == Sequence.Nil() => sequences
+        case _ => concat(sequences, Sequence.Cons(currentGroup, Nil()))
+      grouping(s, Nil(), Nil())
 
     /*
      * Partition the sequence into two sequences based on the predicate
      * E.g., [10, 20, 30] => ([10], [20, 30]) if pred is (_ < 20)
      * E.g., [11, 20, 31] => ([20], [11, 31]) if pred is (_ % 2 == 0)
      */
-    def partition[A](s: Sequence[A])(pred: A => Boolean): (Sequence[A], Sequence[A]) = ???
+    def partition[A](s: Sequence[A])(pred: A => Boolean): (Sequence[A], Sequence[A]) =
+      @tailrec
+      def part[A](s: Sequence[A], seq1: Sequence[A], seq2: Sequence[A], pred: A => Boolean): (Sequence[A], Sequence[A]) = s match
+        case Cons(h, t) if pred(h) => part(t, concat(seq1, Cons(h, Nil())), seq2, pred)
+        case Cons(h, t) => part(t, seq1, concat(seq2, Cons(h, Nil())), pred)
+        case _ => (seq1, seq2)
+      part(s, Nil(), Nil(), pred)
+
+
 
 @main def trySequences =
   import Sequences.* 
