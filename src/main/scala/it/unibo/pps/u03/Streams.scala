@@ -43,6 +43,10 @@ object Streams extends App :
       case Cons(h, t) if pred(h()) => Sequence.Cons(h(), takeWhile(t())(pred))
       case _ => Sequence.Nil()
 
+    def fill[A](n: Int)(element: A): Stream[A] = n match
+      case 0 => Empty()
+      case n => cons(element, fill(n-1)(element))
+
   end Stream
 
 @main def tryStreams =

@@ -12,3 +12,6 @@ class StreamTest:
   
   @Test def takeWhileShouldReturnValuesThatSatisfyPredicate(): Unit =
     assertEquals(Cons(0, Cons(1, Cons(2, Nil()))), Stream.takeWhile(intStream)(_ < 3))
+
+  @Test def fillShouldFillAStreamOfSameElements(): Unit =
+    assertEquals(Cons("a", Cons("a", Cons("a", Nil()))), Stream.toList(Stream.fill(3)("a")))
