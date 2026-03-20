@@ -1,5 +1,7 @@
 package u03
 
+import scala.annotation.tailrec
+
 object Streams extends App :
 
   import Sequences.*
@@ -36,6 +38,10 @@ object Streams extends App :
 
     def iterate[A](init: => A)(next: A => A): Stream[A] =
       cons(init, iterate(next(init))(next))
+
+    def takeWhile[A](stream: Stream[A])(pred: A => Boolean): Sequence[A] = stream match
+      case Cons(h, t) if pred(h()) => Sequence.Cons(h(), takeWhile(t())(pred))
+      case _ => Sequence.Nil()
 
   end Stream
 
