@@ -71,8 +71,8 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [] => []
      */
     def reverse[A](s: Sequence[A]): Sequence[A] = s match
-      case Nil() => Nil()
       case Cons(h, t) => concat(reverse(t), Cons(h, Nil()))
+      case _ => Nil()
 
     /*
      * Map the elements of the sequence to a new sequence and flatten the result
@@ -126,9 +126,9 @@ object Sequences: // Essentially, generic linkedlists
     def distinct[A](s: Sequence[A]): Sequence[A] =
       @tailrec
       def dist[A](remainingSequence: Sequence[A])(distinctSequence: Sequence[A]): Sequence[A] = remainingSequence match
-        case Nil() => distinctSequence
         case Cons(h, t) if contains(distinctSequence)(h) => dist(t)(distinctSequence)
         case Cons(h, t) => dist(t)(concat(distinctSequence, Cons(h, Nil())))
+        case _ => distinctSequence
       dist(s)(Nil())
 
     /*
@@ -137,13 +137,13 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30] => [[10], [20], [30]]
      * E.g., [10, 20, 20, 30] => [[10], [20, 20], [30]]
      */
-      
+
     def group[A](s: Sequence[A]): Sequence[Sequence[A]] =
       @tailrec
       def grouping[A](s: Sequence[A], sequences: Sequence[Sequence[A]], currentGroup: Sequence[A]): Sequence[Sequence[A]] = s match
         case Cons(h, t) if contains(currentGroup)(h) || currentGroup == Sequence.Nil() => grouping(t, sequences, concat(currentGroup, Sequence.Cons(h, Nil())))
         case Cons(h, t) => grouping(t, concat(sequences, Sequence.Cons(currentGroup, Nil())), Sequence.Cons(h, Nil()))
-        case _ if currentGroup == Sequence.Nil() => sequences
+        case Nil() if currentGroup == Sequence.Nil() => sequences
         case _ => concat(sequences, Sequence.Cons(currentGroup, Nil()))
       grouping(s, Nil(), Nil())
 
