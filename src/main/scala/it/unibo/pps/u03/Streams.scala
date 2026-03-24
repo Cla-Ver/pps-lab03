@@ -47,6 +47,14 @@ object Streams extends App :
       case 0 => Empty()
       case n => cons(element, fill(n-1)(element))
 
+    /*def interleave[A](stream1: Stream[A])(stream2: Stream[A]): Stream[A] =
+      def interl[A](stream1: Stream[A], stream2: Stream[A], current: Stream[A], firstTurn: Boolean): Stream[A] = (stream1, stream2) match
+        case (Empty(), Empty()) => current
+        case (Cons(h, t), s2) if firstTurn || s2 == Empty() => interl(stream1, stream2, cons(h(), take(stream1)(1)), !firstTurn)
+        case (s1,  Cons(h, t)) => interl(stream1, stream2, cons(h(), take(stream2)(1)), !firstTurn)
+
+      interl(stream1, stream2, Empty(), true)*/
+
   end Stream
 
 @main def tryStreams =
@@ -60,3 +68,10 @@ object Streams extends App :
 
   lazy val corec: Stream[Int] = Stream.cons(1, corec) // {1,1,1,..}
   println(Stream.toList(Stream.take(corec)(10))) // [1,1,..,1]
+
+  val fibonacci: Stream[Int] = Stream.map(Stream.iterate((0, 1))((e1, e2) => (e2, e1+e2)))((e1, e2) => e1)
+  println(Stream.toList(Stream.take(fibonacci)(5))) // Cons (0 , Cons (1 , Cons (1 , Cons (2 , Cons (3 , Nil () ) ) ) ))
+
+  /*val s1 = Stream.fromList(List(1, 3, 5))
+  val s2 = Stream.fromList(List(2, 4, 6, 8, 10))
+  Stream.toList(Stream.interleave(s1, s2))*/
