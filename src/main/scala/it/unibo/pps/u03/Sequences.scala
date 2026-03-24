@@ -84,6 +84,11 @@ object Sequences: // Essentially, generic linkedlists
       case (Nil(), _) => Nil()
       case (Cons(h, t), mapper) => concat(mapper(h), flatMap(t)(mapper))
 
+    @tailrec
+    def foldLeft[A, B](sequence: Sequence[A])(initialValue: B)(operator: (B, A) => B): B = sequence match
+      case Nil() => initialValue
+      case Cons(h, t) => foldLeft(t)(operator(initialValue, h))(operator)
+
     /*
      * Get the minimum element in the sequence
      * E.g., [30, 20, 10] => 10
@@ -91,11 +96,10 @@ object Sequences: // Essentially, generic linkedlists
      */
     def min(s: Sequence[Int]): Optional[Int] =
       @tailrec
-      def minimum(s: Sequence[Int], minimumSoFar: Optional[Int]): Optional[Int] = (s, minimumSoFar) match
-        case (Nil(), m) => m
-        case (Cons(h, t), Optional.Empty()) => minimum(t, Optional.Just(h))
-        case (Cons(h, t), Optional.Just(m)) if h < m => minimum(t, Optional.Just(h))
-        case (Cons(_, t), m) => minimum(t, m)
+      def minimum(s: Sequence[Int], minimumSoFar: Optional[Int]): Optional[Int] = s match
+        case Cons(h, t) if h < Optional.orElse(minimumSoFar, h + 1) => minimum(t, Optional.Just(h))
+        case Cons(_, t) => minimum(t, minimumSoFar)
+        case _ => minimumSoFar
       minimum(s, Optional.Empty())
 
     /*
