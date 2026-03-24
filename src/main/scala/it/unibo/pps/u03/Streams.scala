@@ -1,5 +1,7 @@
 package u03
 
+import u03.Sequences.Sequence.*
+
 import scala.annotation.tailrec
 
 object Streams extends App :
@@ -47,13 +49,22 @@ object Streams extends App :
       case 0 => Empty()
       case n => cons(element, fill(n-1)(element))
 
-    /*def interleave[A](stream1: Stream[A])(stream2: Stream[A]): Stream[A] =
-      def interl[A](stream1: Stream[A], stream2: Stream[A], current: Stream[A], firstTurn: Boolean): Stream[A] = (stream1, stream2) match
-        case (Empty(), Empty()) => current
-        case (Cons(h, t), s2) if firstTurn || s2 == Empty() => interl(stream1, stream2, cons(h(), take(stream1)(1)), !firstTurn)
-        case (s1,  Cons(h, t)) => interl(stream1, stream2, cons(h(), take(stream2)(1)), !firstTurn)
+    def fromList[A](s: Sequence[A]): Stream[A] = s match
+      case Sequence.Cons(h, t) => cons(h, fromList(t))
+      case _ => Empty()
 
-      interl(stream1, stream2, Empty(), true)*/
+    def interleave[A](stream1: Stream[A], stream2: Stream[A]): Stream[A] = (stream1, stream2) match
+      case (Cons(h, t), s2) => cons(h(), interleave(s2, t()))
+      case (Empty(), s2) => s2
+      case _ => Empty()
+
+    def cycle[A](lst: Sequence[A]): Stream[A] =
+      def loop[A](fullList: Sequence[A], remainingList: Sequence[A]): Stream[A] = remainingList match
+        case Sequence.Cons(h, t) => cons(h, loop(fullList, t))
+        case _ => loop(fullList, fullList)
+
+      loop(lst, lst)
+
 
   end Stream
 
@@ -72,6 +83,9 @@ object Streams extends App :
   val fibonacci: Stream[Int] = Stream.map(Stream.iterate((0, 1))((e1, e2) => (e2, e1+e2)))((e1, e2) => e1)
   println(Stream.toList(Stream.take(fibonacci)(5))) // Cons (0 , Cons (1 , Cons (1 , Cons (2 , Cons (3 , Nil () ) ) ) ))
 
-  /*val s1 = Stream.fromList(List(1, 3, 5))
-  val s2 = Stream.fromList(List(2, 4, 6, 8, 10))
-  Stream.toList(Stream.interleave(s1, s2))*/
+  val s1 = Stream.fromList(Cons(1, Cons(3, Cons(5, Nil()))))
+  val s2 = Stream.fromList(Cons(2, Cons(4, Cons(6, Cons(8, Cons(10, Nil()))))))
+  val s3 = Stream.toList(Stream.interleave(s1, s2))
+  val s4 = Stream.cycle(Cons(1, Cons(2, Nil())))
+  //println(Stream.toList(Stream.take(s2)(4)))
+  println(Stream.toList(Stream.take(s4)(5)))
