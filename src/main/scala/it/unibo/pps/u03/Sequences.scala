@@ -57,10 +57,9 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10], [] => [10]
      * E.g., [], [] => []
      */
-    def concat[A](s1: Sequence[A], s2: Sequence[A]): Sequence[A] = (s1, s2) match
-      case (Nil(), s2) => s2
-      case (s1, Nil()) => s1
-      case (Cons(h, t), s2) => Cons(h, concat(t, s2))
+    def concat[A](s1: Sequence[A], s2: Sequence[A]): Sequence[A] = s1 match
+      case Cons(h, t) => Cons(h, concat(t, s2))
+      case _ => s2
 
     /*
      * Reverse the sequence
@@ -111,9 +110,9 @@ object Sequences: // Essentially, generic linkedlists
      */
     @tailrec
     def contains[A](s: Sequence[A])(elem: A): Boolean = s match
-      case Nil() => false
       case Cons(h, t) if h == elem => true
       case Cons(_, t) => contains(t)(elem)
+      case _ => false
 
     /*
      * Remove duplicates from the sequence

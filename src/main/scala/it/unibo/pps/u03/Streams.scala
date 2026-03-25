@@ -53,10 +53,9 @@ object Streams extends App :
       case Sequence.Cons(h, t) => cons(h, fromList(t))
       case _ => Empty()
 
-    def interleave[A](stream1: Stream[A], stream2: Stream[A]): Stream[A] = (stream1, stream2) match
-      case (Cons(h, t), s2) => cons(h(), interleave(s2, t()))
-      case (Empty(), s2) => s2
-      case _ => Empty()
+    def interleave[A](stream1: Stream[A], stream2: Stream[A]): Stream[A] = stream1 match
+      case Cons(h, t) => cons(h(), interleave(stream2, t()))
+      case _ => stream2
 
     def cycle[A](lst: Sequence[A]): Stream[A] =
       def loop[A](fullList: Sequence[A], remainingList: Sequence[A]): Stream[A] = remainingList match
@@ -88,4 +87,4 @@ object Streams extends App :
   val s3 = Stream.toList(Stream.interleave(s1, s2))
   val s4 = Stream.cycle(Cons(1, Cons(2, Nil())))
   //println(Stream.toList(Stream.take(s2)(4)))
-  println(Stream.toList(Stream.take(s4)(5)))
+  println(s3)
