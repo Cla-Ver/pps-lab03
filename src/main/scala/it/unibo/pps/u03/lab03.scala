@@ -99,11 +99,7 @@ object lab03:
       def fill[A](n: Int)(element: A): Stream[A] = n match
         case 0 => Empty()
         case n => cons(element, fill(n - 1)(element))
-
-      def fromList[A](s: Sequence[A]): Stream[A] = s match
-        case Sequence.Cons(h, t) => cons(h, fromList(t))
-        case _ => Empty()
-
+  
       def interleave[A](stream1: Stream[A], stream2: Stream[A]): Stream[A] = (stream1, stream2) match
         case (Cons(h, t), s2) => cons(h(), interleave(s2, t()))
         case (Empty(), s2) => s2
