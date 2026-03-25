@@ -1,4 +1,4 @@
-/*package it.unibo.pps.u03
+package it.unibo.pps.u03
 import scala.annotation.tailrec
 import u03.Optionals.Optional
 import u03.Streams.Stream.*
@@ -110,4 +110,3 @@ object lab03:
           case _ => loop(fullList, fullList)
 
         loop(lst, lst)
-*/
