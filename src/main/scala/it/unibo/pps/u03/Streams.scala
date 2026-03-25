@@ -2,6 +2,7 @@ package u03
 
 import u03.Sequences.Sequence.*
 
+
 import scala.annotation.tailrec
 
 object Streams extends App :
@@ -64,6 +65,7 @@ object Streams extends App :
 
       loop(lst, lst)
 
+    val fibonacci: Stream[Int] = Stream.map(Stream.iterate((0, 1))((e1, e2) => (e2, e1+e2)))((e1, e2) => e1)
 
   end Stream
 
@@ -79,7 +81,7 @@ object Streams extends App :
   lazy val corec: Stream[Int] = Stream.cons(1, corec) // {1,1,1,..}
   println(Stream.toList(Stream.take(corec)(10))) // [1,1,..,1]
 
-  val fibonacci: Stream[Int] = Stream.map(Stream.iterate((0, 1))((e1, e2) => (e2, e1+e2)))((e1, e2) => e1)
+  import u03.Streams.Stream.fibonacci
   println(Stream.toList(Stream.take(fibonacci)(5))) // Cons (0 , Cons (1 , Cons (1 , Cons (2 , Cons (3 , Nil () ) ) ) ))
 
   val s1 = Stream.fromList(Cons(1, Cons(3, Cons(5, Nil()))))

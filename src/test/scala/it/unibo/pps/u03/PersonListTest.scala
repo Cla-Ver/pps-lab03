@@ -21,3 +21,6 @@ class PersonListTest:
 
   @Test def uniqueCoursesShouldCountUniqueCourses(): Unit =
     assertEquals(2, countDistinctCourses(sequence))
+
+  @Test def uniqueCoursesShouldWorkOnEmptySequences(): Unit =
+    assertEquals(0, countDistinctCourses(Nil()))
