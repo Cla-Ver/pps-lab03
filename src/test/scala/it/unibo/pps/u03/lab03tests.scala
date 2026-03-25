@@ -6,7 +6,7 @@ import u03.Sequences.Sequence
 import u03.Sequences.Sequence.*
 import u03.Streams.Stream.{cycle, fibonacci, interleave}
 
-class lab03tests:
+class lab03PersonTests:
   // Person tests
   import Person.*
 
@@ -29,6 +29,8 @@ class lab03tests:
     assertEquals(0, countDistinctCourses(Nil()))
 
   //Stream tests
+
+class lab03StreamTests:
 
   import u03.Streams.*
   val intStream: Stream[Int] = Stream.iterate(0)(_ + 1)
