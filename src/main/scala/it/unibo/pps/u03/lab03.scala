@@ -9,7 +9,7 @@ import Person.*
 
 object lab03:
       // Task 1
-      
+
       @tailrec
       def skip[A](s: Sequence[A])(n: Int): Sequence[A] = (s, n) match
         case (l, 0) => l
@@ -99,11 +99,10 @@ object lab03:
       def fill[A](n: Int)(element: A): Stream[A] = n match
         case 0 => Empty()
         case n => cons(element, fill(n - 1)(element))
-  
-      def interleave[A](stream1: Stream[A], stream2: Stream[A]): Stream[A] = (stream1, stream2) match
-        case (Cons(h, t), s2) => cons(h(), interleave(s2, t()))
-        case (Empty(), s2) => s2
-        case _ => Empty()
+
+      def interleave[A](stream1: Stream[A], stream2: Stream[A]): Stream[A] = stream1 match
+        case Cons(h, t) => cons(h(), interleave(stream2, t()))
+        case _ => stream2
 
       def cycle[A](lst: Sequence[A]): Stream[A] =
         def loop[A](fullList: Sequence[A], remainingList: Sequence[A]): Stream[A] = remainingList match
