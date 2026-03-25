@@ -1,4 +1,4 @@
-package it.unibo.pps.u03
+/*package it.unibo.pps.u03
 import scala.annotation.tailrec
 import u03.Optionals.Optional
 import u03.Streams.Stream.*
@@ -85,8 +85,8 @@ object lab03:
 
       @tailrec
       def foldLeft[A, B](sequence: Sequence[A])(initialValue: B)(operator: (B, A) => B): B = sequence match
-        case Nil() => initialValue
         case Cons(h, t) => foldLeft(t)(operator(initialValue, h))(operator)
+        case _ => initialValue
 
       def countDistinctCourses(persons: Sequence[Person]): Int = foldLeft(distinct(teachersCourses(persons)))(0)((e, _) => e + 1)
 
@@ -110,3 +110,4 @@ object lab03:
           case _ => loop(fullList, fullList)
 
         loop(lst, lst)
+*/
