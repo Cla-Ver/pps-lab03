@@ -11,9 +11,9 @@ object lab03:
       // Task 1
 
       @tailrec
-      def skip[A](s: Sequence[A])(n: Int): Sequence[A] = (s, n) match
-        case (l, 0) => l
-        case (Cons(h, t), n) => skip(t)(n - 1)
+      def skip[A](s: Sequence[A])(n: Int): Sequence[A] = s match
+        case s if n == 0 => s
+        case Cons(h, t) => skip(t)(n - 1)
         case _ => Nil()
 
       def zip[A, B](first: Sequence[A], second: Sequence[B]): Sequence[(A, B)] = (first, second) match

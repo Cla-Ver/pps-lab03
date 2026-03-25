@@ -36,9 +36,9 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [], 2 => []
      */
     @tailrec
-    def skip[A](s: Sequence[A])(n: Int): Sequence[A] = (s, n) match
-      case (l, 0) => l
-      case (Cons(h, t), n) => skip(t)(n - 1)
+    def skip[A](s: Sequence[A])(n: Int): Sequence[A] = s match
+      case s if n == 0 => s
+      case Cons(h, t) => skip(t)(n - 1)
       case _ => Nil()
 
     /*
